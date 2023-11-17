@@ -1,0 +1,99 @@
+.hero-logo{
+    display: flex;
+    justify-content: center;
+    margin-top: 15%;
+    color: #E20C0C;
+    font-size: 35px;
+  }
+  
+  .hero-action{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 40px;
+    color: #E20C0C;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+
+  .email{
+    text-decoration: none;
+    color: #E20C0C;
+  }
+  
+  .telefone{
+    text-decoration: underline;
+    color: #E20C0C;
+  }
+  
+  .meio{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .meio h3{
+    color: #E20C0C;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-family: inter;
+    margin-top: 50px;
+    margin-bottom: 3px;
+  }
+  
+  .meio p{
+    width: 250px;
+    font-size: 15px;
+    margin-top: 1px;
+    text-align: center;
+    color: gray;
+  }
+  
+  form{
+    display: flex;
+    justify-content: center;
+  }
+  
+  input{
+    background-color: rgba(120, 111, 128, 0.15);
+    padding: 10px 40px 10px 40px;
+    text-align: center;
+    color: black;
+    border-radius: 5px;
+    border: 1px solid gray;
+  }
+  
+  .avancar{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .buton{
+    background-color: #E20C0C;
+    padding: 10px 50px 10px 50px;
+    border-radius: 8px;
+    color: white;
+    text-transform: uppercase;
+    text-decoration: none;
+    margin-top: 10px;
+  }
+  
+  .container{
+    display: flex;
+    justify-content: center;
+  }
+  
+  .nao-conseguiu{
+    color: #E20C0C;
+    text-transform: uppercase;
+    font-size: 13px;
+    margin-top: 20px;
+  }
+  
+  .voltar{
+     color: #E20C0C;
+    text-transform: uppercase;
+    font-size: 13px;
+    margin-top: 70px;
+  }
+  
