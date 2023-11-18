@@ -15,11 +15,11 @@
         <form action="login.html" class="facin-form__princial">
             <fieldset class="cadastro">
                 <legend class="legenda">seja bem-vindo(a)</legend>
-                <input type="text" id="nome" placeholder="NOME COMPLETO">
-                <input type="tel" id="telefone" placeholder="CELULAR">
+                <input type="text" id="nome" placeholder="NOME COMPLETO" required>
+                <input type="tel" id="telefone" placeholder="CELULAR" maxlength="11" required>
                 <input type="email" id="email" placeholder="E-MAIL" required>
-                <input type="password" id="senha" placeholder="SENHA" required>
-                <input type="submit" value="entrar" class="botao-entrar"
+                <input type="password" id="senha" placeholder="SENHA" minlength="8" required>
+                <input type="submit" value="entrar" class="botao-entrar">
             </fieldset>
 
         </form>
