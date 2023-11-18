@@ -1,9 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap');
+
+@font-face {
+    font-family: 'agrandir';
+    src: url(fonts/agrandir-grand.ttf) format(truetype);
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body{
     height: 100%;
 }
 
 body{
-
+    font-family: 'Inter', sans-serif;
+    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -13,6 +23,7 @@ body{
 .logo{
     font-size: 35px;
     color: #E20C0C;
+    font-family: 'agrandir', 'Times New Roman', Times, serif;
 }
 
 .principal-buton{
