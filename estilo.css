@@ -11,7 +11,8 @@ html, body{
 }
 
 body{
-
+    max-width: 480px;
+    margin: 0 auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -154,12 +155,35 @@ body{
     width: 180px;
     display: block;
     margin: auto;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border: none;
     font-family: 'Inter';
     cursor: pointer;
+    text-align: center;
+    text-decoration: none;
 }
 
 .botao-entrar:hover{
     text-decoration: underline;
+}
+
+/*editando a página perfil*/
+.cabecalho{
+    background-color: #E20C0C;
+    width: 100%;
+    color: white;
+}
+
+.logo-perfil{
+    margin-left: 10px;
+    font-family: 'agrandir';
+}
+
+.logo-usuario{
+    margin-left: 10px;
+    font-family: 'Inter';
+}
+
+.corpo-elementos{
+    list-style-type: none;
 }
