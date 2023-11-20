@@ -97,7 +97,8 @@ img{
 }
 
 .carrinho:hover, .sino:hover, .home:hover, .favoritos:hover{
-    width: 35px;
-    height: 35px;
+    background-color: white;
+    padding: 5px;
+    border-radius: 40px;
 }
   
