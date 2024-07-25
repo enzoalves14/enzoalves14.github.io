@@ -96,7 +96,7 @@ img{
     border-radius: 40px;
 }
 
-.carrinho:hover, .sino:hover, .home:hover, .favoritos:hover{
+.carrinho:hover, .sino:hover, .home:hover, .favoritos:hover, .perfil:hover{
     background-color: white;
     padding: 5px;
     border-radius: 40px;
