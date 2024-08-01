@@ -1,0 +1,108 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap');
+@font-face {
+    font-family: 'agrandir';
+    src: url(fonts/agrandir-grand.ttf) format(truetype);
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body{
+    height: 100%;
+}
+body{
+    max-width: 480px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    font-family: 'Inter', sans-serif;
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+/*está editando os nomes facin*/
+.logo{
+    font-size: 25px;
+    color: #E20C0C;
+    font-family: 'agrandir', 'Times New Roman', Times, serif;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+img{
+    width: 30px;
+    height: 30px;
+    margin: 0 20px;
+    cursor: pointer;
+}
+
+
+
+
+.search-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 250px; /* Largura da barra de busca */
+    height: 30px;
+    margin-top: 20px;
+    box-shadow: 0 5px 9px rgba(0, 0, 0, 0.2); /* Sombra */
+  }
+  
+  .search-input {
+    border: none;
+    padding: 10px;
+    flex: 1;
+    outline: none;
+  }
+  
+  .search-button {
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .search-button img {
+    width: 30px; /* Tamanho da imagem da lupa */
+    height: 30px;
+  }
+
+/* editando os ícones*/
+
+.icones{
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40px;
+}
+
+.icones p{
+  font-size: 11px;
+  text-align: center;
+}
+
+/* editando os círculos*/
+
+.container_circulo{
+  display: flex;
+  justify-content: space-around;
+}
+
+.circulo{
+    width: 15px;
+    height: 15px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin: 10px;
+}
