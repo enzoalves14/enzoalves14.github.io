@@ -6,11 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const user = JSON.parse(userJSON);
-  const nameEl = document.querySelector('.logo-usuario__nome');
+    const nameEl = document.querySelector('.profile-info__nome');
   if (nameEl && user.nome) {
     nameEl.textContent = `olá, ${user.nome}`;
   }
-});
 
   const logoutBtn = document.getElementById('logout');
   if (logoutBtn) {
