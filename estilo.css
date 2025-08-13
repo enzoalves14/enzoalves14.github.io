@@ -1,42 +1,81 @@
- @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap');
- @font-face {
-     font-family: 'agrandir';
-     src: url(fonts/agrandir-grand.ttf) format(truetype);
-     font-weight: normal;
-     font-style: normal;
- }
- 
- html, body{
-     height: 100%;
- }
- 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap');
+@font-face {
+    font-family: 'agrandir';
+    src: url(fonts/agrandir-grand.ttf) format(truetype);
+    font-weight: normal;
+    font-style: normal;
+}
 
-body{
+:root {
+    --primary-color: #E20C0C;
+    --background-gradient: linear-gradient(135deg, #ffecec, #ffffff);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
     max-width: 480px;
-   margin: 0 auto;
+    margin: 0 auto;
+    padding: 2rem 1rem;
     display: flex;
     justify-content: center;
-   align-items: center;
-   flex-direction: column;
+    align-items: center;
+    flex-direction: column;
+    gap: 1.5rem;
 
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #ffecec, #ffffff);
+    background: var(--background-gradient);
+    min-height: 100vh;
 }
  
  /*está editando os nomes facin*/
  .logo{
      font-size: 35px;
-     color: #E20C0C;
+     color: var(--primary-color);
      font-family: 'agrandir', 'Times New Roman', Times, serif;
+     text-align: center;
  }
  
 .principal-buton{
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-    text-align: center;
-    text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  text-transform: uppercase;
+  gap: 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.principal-buton a{
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 15px;
+  background-color: var(--primary-color);
+  color: #fff;
+  transition: filter 0.2s ease;
+}
+
+.principal-buton a.criar{
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+}
+
+.principal-buton a:hover{
+  filter: brightness(1.1);
 }
 
 .facin-form{
@@ -47,20 +86,23 @@ body{
 
 .facin-form__princial{
     display: flex;
-   flex-direction: column;
-   padding: 40px 30px;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 40px 30px;
     border-radius: 8px;
-   background-color: #fff;
-   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 340px;
 }
 
 #email, #senha, #telefone, #nome{
-    padding: 10px;
-   text-align: center;
-   margin-bottom: 18px;
-   border-radius: 5px;
+    padding: 10px;␊
+    text-align: center;
+    border-radius: 5px;
     background-color: #F1F1F1;
-   width: 270px;
+    width: 100%;
+    max-width: 270px;
     border: 1px solid #ccc;
 }
  
@@ -73,20 +115,22 @@ body{
  
  /*está editando a legenda do formulario de cadastro*/
  .legenda{
-     color: #E20C0C;
+     color: var(--primary-color);
      text-transform: uppercase;
  }
  
- .botao-entrar:hover{
-     text-decoration: underline;
- }
- 
- .entrar{
-     background-color: #E20C0C;
-     color: white;
-     padding: 13px;
-     border-radius: 5px;
-     text-transform: uppercase;
-     font-size: 15px;
+.botao-entrar{
+    background-color: var(--primary-color);
+    color: white;
+    padding: 13px;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 15px;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+}
 
- }
+.botao-entrar:hover{
+    filter: brightness(1.1);
+}
