@@ -53,7 +53,6 @@ body {
   text-transform: uppercase;
   gap: 1rem;
   width: 100%;
-  max-width: 300px;
 }
 
 .principal-buton a{
@@ -78,11 +77,11 @@ body {
   filter: brightness(1.1);
 }
 
-.facin-form{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
+.facin-form{␊
+    width: 100%;␊
+    display: flex;␊
+    justify-content: center;␊
+}␊
 
 .facin-form__princial{
     display: flex;
@@ -97,12 +96,11 @@ body {
 }
 
 #email, #senha, #telefone, #nome{
-    padding: 10px;␊
+    padding: 10px;
     text-align: center;
     border-radius: 5px;
     background-color: #F1F1F1;
     width: 100%;
-    max-width: 270px;
     border: 1px solid #ccc;
 }
  
@@ -133,4 +131,18 @@ body {
 
 .botao-entrar:hover{
     filter: brightness(1.1);
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 1.5rem 1rem;
+    }
+
+    .facin-form__princial {
+        padding: 20px 15px;
+    }
+
+    .principal-buton a {
+        padding: 10px 16px;
+    }
 }
