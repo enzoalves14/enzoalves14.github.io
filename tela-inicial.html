@@ -7,18 +7,20 @@
     <title>Document</title>
 </head>
 <body>
-    <header>
+   <header>
         <div class="barras"><img src="imagens/menu-aberto.png" alt="barra" class="barra"></div>
         <div class="logo">facin</div>
         <div class="suporte"><img src="imagens/fone-de-ouvido.png" alt="fone" class="fone"></div>
     </header>
 
-    <form class="search-container">
+    <div class="search-container">
         <input type="text" placeholder="Buscar..." class="search-input">
-        <button type="submit" class="search-button">
+        <button class="search-button">
           <img src="imagens/lupa.png" alt="Buscar" class="lupa">
         </button>
-    </form>
+      </div>
+
+    <div class="search-results"></div>
 
     <div class="icones">
         <div class="itens">
@@ -44,6 +46,7 @@
         <div class="circulo"></div>
         <div class="circulo"></div>
     </div>
-<script src="scripts/search.js"></script>
+    <script src="scripts/home.js"></script>
+    <script src="scripts/search.js"></script>
 </body>
 </html>
