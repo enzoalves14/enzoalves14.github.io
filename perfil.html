@@ -7,28 +7,24 @@
     <link rel="stylesheet" href="estilo-perfil.css">
 </head>
 <body>
-     <header class="cabecalho">
-        <div class="logo-perfil">
-            <h1 class="logo-perfil__titulo">facin</h1>
-        </div>
-        <div class="logo-usuario">
-            <h3 class="logo-usuario__nome">olá, xxxx</h3>
-        </div>
+    <header class="cabecalho">
+        <h1 class="logo-perfil__titulo">facin</h1>
     </header>
 
-    <div class="corpo">
-        <section class="avatar-section">
+    <main class="corpo">
+        <section class="profile-info">
             <img src="imagens/do-utilizador.png" alt="foto de perfil" class="avatar">
+            <h2 class="profile-info__nome">olá, xxxx</h2>
         </section>
-        <ul class="corpo-elementos">
-            <li><a href="#" class="botao-entrar"><img src="imagens/ordem-de-servico.png" alt="" class="botao-icon">meus pedidos</a></li>
-            <li><a href="#" class="botao-entrar"><img src="imagens/do-utilizador.png" alt="" class="botao-icon">editar perfil</a></li>
-            <li><a href="#" class="botao-entrar"><img src="imagens/armazenar.png" alt="" class="botao-icon">cupons</a></li>
-            <li><a href="#" class="botao-entrar"><img src="imagens/servico.png" alt="" class="botao-icon">locais favoritos</a></li>
-            <li><button type="button" id="dark-mode-toggle" class="botao-entrar"><img src="imagens/lupa.png" alt="" class="botao-icon">tema escuro</button></li>
-            <li><a href="index.html" id="logout" class="botao-entrar"><img src="imagens/menu-aberto.png" alt="" class="botao-icon">sair</a></li>
-        </ul>
-    </div>
+        <nav class="profile-menu">
+            <a href="#" class="menu-item"><img src="imagens/ordem-de-servico.png" alt="" class="menu-icon"><span>meus pedidos</span></a>
+            <a href="#" class="menu-item"><img src="imagens/do-utilizador.png" alt="" class="menu-icon"><span>editar perfil</span></a>
+            <a href="#" class="menu-item"><img src="imagens/armazenar.png" alt="" class="menu-icon"><span>cupons</span></a>
+            <a href="#" class="menu-item"><img src="imagens/servico.png" alt="" class="menu-icon"><span>locais favoritos</span></a>
+            <button type="button" id="dark-mode-toggle" class="menu-item"><img src="imagens/lupa.png" alt="" class="menu-icon"><span>tema escuro</span></button>
+            <a href="index.html" id="logout" class="menu-item"><img src="imagens/menu-aberto.png" alt="" class="menu-icon"><span>sair</span></a>
+        </nav>
+    </main>
 
     <footer class="rodape">
         <img src="imagens/carrinho-de-compras.png" alt="carrinho" class="carrinho">
