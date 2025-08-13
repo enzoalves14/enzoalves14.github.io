@@ -11,8 +11,9 @@ html, body{
     height: 100%;
 }
 body{
-    max-width: 480px;
-    margin: auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -39,9 +40,11 @@ header{
 }
 
 img{
-    width: 30px;
-    height: 30px;
-    margin: 0 20px;
+    width: 6vw;
+    height: 6vw;
+    max-width: 1.875rem;
+    max-height: 1.875rem;
+    margin: 0 4vw;
     cursor: pointer;
 }
 
@@ -54,8 +57,9 @@ img{
     border: 1px solid #ccc;
     border-radius: 5px;
     overflow: hidden;
-    width: 250px; /* Largura da barra de busca */
-    height: 30px;
+    width: 80%;
+    max-width: 25rem;
+    height: 2.5rem;
     margin-top: 20px;
     box-shadow: 0 5px 9px rgba(0, 0, 0, 0.2); /* Sombra */
   }
@@ -75,16 +79,21 @@ img{
   }
   
   .search-button img {
-    width: 30px; /* Tamanho da imagem da lupa */
-    height: 30px;
+    width: 6vw; /* Tamanho da imagem da lupa */
+    height: 6vw;
+    max-width: 1.875rem;
+    max-height: 1.875rem;
   }
 
 /* editando os ícones*/
 
 .icones{
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+  gap: 20px;
+  width: 100%;
   margin-top: 40px;
+  justify-items: center;
 }
 
 .icones p{
@@ -97,12 +106,21 @@ img{
 .container_circulo{
   display: flex;
   justify-content: space-around;
+  width: 100%;
 }
 
 .circulo{
-    width: 15px;
-    height: 15px;
+    width: 3vw;
+    height: 3vw;
+    max-width: 0.9375rem;
+    max-height: 0.9375rem;
     background-color: #ccc;
     border-radius: 50%;
     margin: 10px;
+}
+
+@media (min-width: 768px) {
+  .search-container {
+    width: 50%;
+  }
 }
