@@ -1,4 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const menuButton = document.querySelector('.barra');
+  const sideMenu = document.getElementById('side-menu');
+  const menuOverlay = document.getElementById('menu-overlay');
+  const supportIcon = document.querySelector('.fone');
+
+  if (menuButton && sideMenu && menuOverlay) {
+    const toggleMenu = () => {
+      sideMenu.classList.toggle('open');
+      menuOverlay.classList.toggle('show');
+    };
+    menuButton.addEventListener('click', toggleMenu);
+    menuOverlay.addEventListener('click', toggleMenu);
+  }
+
+  if (supportIcon) {
+    supportIcon.addEventListener('click', () => {
+      window.location.href = 'mailto:suporte@facin.com';
+    });
+  }
   // Map icons to their target pages
   const iconRoutes = {
     '.icone_servico': 'servicos.html',
