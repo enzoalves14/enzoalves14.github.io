@@ -55,8 +55,10 @@ body {
 .corpo {
     flex: 1;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 30px;
 }
 
 .corpo-elementos {
@@ -80,10 +82,52 @@ body {
     text-decoration: none;
     border: none;
     transition: filter 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .botao-entrar:hover {
     filter: brightness(1.1);
+}
+
+.botao-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.corpo-elementos li {
+    margin-bottom: 10px;
+}
+
+.avatar-section {
+    display: flex;
+    justify-content: center;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+/* tema escuro */
+body.dark-mode {
+    background: #1c1c1c;
+    color: #fff;
+}
+
+body.dark-mode .cabecalho {
+    background-color: #000;
+}
+
+body.dark-mode .botao-entrar {
+    background-color: #333;
+}
+
+body.dark-mode .rodape {
+    background-color: #111;
 }
 
 /* rodapé */
@@ -109,9 +153,4 @@ body {
 
 .rodape img:hover {
     transform: scale(1.1);
-}
-
-.perfil {
-    width: 25px;
-    height: 25px;
 }
