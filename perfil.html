@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="estilo-perfil.css">
 </head>
 <body>
-    <header class="cabecalho">
+     <header class="cabecalho">
         <div class="logo-perfil">
             <h1 class="logo-perfil__titulo">facin</h1>
         </div>
@@ -17,12 +17,16 @@
     </header>
 
     <div class="corpo">
+        <section class="avatar-section">
+            <img src="imagens/do-utilizador.png" alt="foto de perfil" class="avatar">
+        </section>
         <ul class="corpo-elementos">
-            <li><a href="#" class="botao-entrar">meus pedidos</a></li>
-            <li><a href="#" class="botao-entrar">editar perfil</a></li>
-            <li><a href="#" class="botao-entrar">cupons</a></li>
-            <li><a href="#" class="botao-entrar">locias favoritos</a></li>
-            <li><a href="index.html" class="botao-entrar">sair</a></li>
+            <li><a href="#" class="botao-entrar"><img src="imagens/ordem-de-servico.png" alt="" class="botao-icon">meus pedidos</a></li>
+            <li><a href="#" class="botao-entrar"><img src="imagens/do-utilizador.png" alt="" class="botao-icon">editar perfil</a></li>
+            <li><a href="#" class="botao-entrar"><img src="imagens/armazenar.png" alt="" class="botao-icon">cupons</a></li>
+            <li><a href="#" class="botao-entrar"><img src="imagens/servico.png" alt="" class="botao-icon">locais favoritos</a></li>
+            <li><button type="button" id="dark-mode-toggle" class="botao-entrar"><img src="imagens/lupa.png" alt="" class="botao-icon">tema escuro</button></li>
+            <li><a href="index.html" id="logout" class="botao-entrar"><img src="imagens/menu-aberto.png" alt="" class="botao-icon">sair</a></li>
         </ul>
     </div>
 
