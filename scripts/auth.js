@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const user = users.find((u) => u.email === email && u.senha === senha);
 
       if (user) {
+        localStorage.setItem('loggedUser', JSON.stringify(user));
         window.location.href = 'perfil.html';
       } else {
         errorEl.textContent = 'E-mail ou senha incorretos.';
