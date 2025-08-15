@@ -829,8 +829,15 @@ Digite como A-B (ex.: 6-4)`, `${curA}-${curB}`);
   });
 
   // boot
-  renderAll();
-  load(); // try load saved state
-  </script>
-</body>
-</html>
+renderAll();
+    load(); // try load saved state
+    </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js');
+        });
+      }
+    </script>
+  </body>
+  </html>
