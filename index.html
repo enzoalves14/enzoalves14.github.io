@@ -75,7 +75,11 @@
       <div class="brand" aria-label="Beach Tennis Manager">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#67d2ff" stroke-width="2"/><path d="M6 10c3 2 9 2 12-1" stroke="#85ffa6" stroke-width="2"/><path d="M9 6c2 3 4 7 6 12" stroke="#67d2ff" stroke-width="2"/></svg>
         <span>Beach Tennis — Gerência de Torneio</span>
-        <span class="pill right" id="tour-pill">Sem torneio</span>
+        <div class="switch small right" id="gender-switch">
+          <button data-g="M" aria-pressed="true">Masculino</button>
+          <button data-g="F" aria-pressed="false">Feminino</button>
+        </div>
+        <span class="pill" id="tour-pill">Sem torneio</span>
       </div>
       <nav class="tabs" role="tablist" aria-label="Seções">
         <button class="tab-btn" role="tab" aria-selected="true" data-tab="config">Configurações</button>
@@ -232,6 +236,10 @@
       <div class="card tv">
         <div class="row" style="align-items:center">
           <div class="big">🎾 Modo TV</div>
+          <div class="switch small" id="tv-gender-switch">
+            <button data-g="M" aria-pressed="true">Masculino</button>
+            <button data-g="F" aria-pressed="false">Feminino</button>
+          </div>
           <div class="right">
             <span class="tag" id="tv-tour-name">—</span>
             <span class="tag" id="tv-tour-info">—</span>
@@ -280,14 +288,17 @@
 
   <script>
   // ======= STATE =======
-  const state = {
-    tournament: {
-      name: '', date: '', local: '', format: 'groups', bestOf: 3, courts: 2, notes: '', groups: 2
-    },
-    teams: [], // {id, a, b}
-    matches: [], // {id, stage:'group'|'knockout'|null, group:'A'|'B'|null, round, a, b, scoreA, scoreB, done, court, time, nextId, nextSlot}
-    seq: 1
-  };
+ function newState(){
+    return {
+      tournament: { name:'', date:'', local:'', format:'groups', bestOf:3, courts:2, notes:'', groups:2 },
+      teams: [], // {id, a, b}
+      matches: [], // {id, stage:'group'|'knockout'|null, group:'A'|'B'|null, round, a, b, scoreA, scoreB, done, court, time, nextId, nextSlot}
+      seq: 1
+    };
+  }
+  const states = { M: newState(), F: newState() };
+  let curGender = 'M';
+  let state = states[curGender];
   const $ = (sel, el=document)=>el.querySelector(sel);
   const $$ = (sel, el=document)=>Array.from(el.querySelectorAll(sel));
   const el = {
@@ -307,21 +318,27 @@
   // ======= UTIL =======
   function uid(){ return state.seq++; }
   function save(){
-    localStorage.setItem('btm_state', JSON.stringify(state));
-    tick();
+     localStorage.setItem('btm_state', JSON.stringify({states, curGender}));
   }
   function load(){
     const raw = localStorage.getItem('btm_state');
     if(!raw) return;
     const obj = JSON.parse(raw);
-    Object.assign(state, obj);
+     if(obj.states){
+      states.M = obj.states.M || newState();
+      states.F = obj.states.F || newState();
+      curGender = obj.curGender || 'M';
+    } else {
+      states.M = obj;
+      states.F = newState();
+      curGender = 'M';
+    }
+    state = states[curGender];
     renderAll();
   }
   function reset(){
-    state.tournament = { name:'', date:'', local:'', format:'groups', bestOf:3, courts:2, notes:'', groups:2 };
-    state.teams = [];
-    state.matches = [];
-    state.seq = 1;
+    states[curGender] = newState();
+    state = states[curGender];
     renderAll(); save();
   }
   function duoName(t){ if(!t) return '—'; return `${t.a} & ${t.b}`; }
@@ -332,11 +349,25 @@
     a.download = filename; a.click(); URL.revokeObjectURL(a.href);
   }
   function letters(n){ const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ'; return Array.from({length:n}, (_,i)=>A[i]||String(i+1)); }
+function setGender(g){
+    if(!states[g]) return;
+    curGender = g;
+    state = states[curGender];
+    renderAll();
+    save();
+  }
+  function updateGenderButtons(){
+    document.querySelectorAll('#gender-switch button, #tv-gender-switch button').forEach(btn=>{
+      btn.setAttribute('aria-pressed', btn.dataset.g===curGender ? 'true' : 'false');
+    });
+  }
 
+    
   // ======= RENDER =======
   function renderHeader(){
     const t = state.tournament;
-    el.pill.textContent = t.name ? `${t.name}${t.date? ' • ' + t.date : ''}` : 'Sem torneio';
+    const gName = curGender==='M' ? 'Masculino' : 'Feminino';
+    el.pill.textContent = t.name ? `${t.name} (${gName})${t.date? ' • ' + t.date : ''}` : 'Sem torneio';
   }
   function renderConfig(){
     const t = state.tournament;
@@ -419,7 +450,8 @@
   }
   function renderTV(){
     const t = state.tournament;
-    el.tv.name.textContent = t.name || '—';
+   const gName = curGender==='M' ? 'Masculino' : 'Feminino';
+    el.tv.name.textContent = t.name ? `${t.name} (${gName})` : '—';
     el.tv.info.textContent = [t.local||'', t.date||''].filter(Boolean).join(' • ') || '—';
 
     const upcoming = state.matches.filter(m=>!m.done).sort((a,b)=> (a.round-b.round) || (a.time||'').localeCompare(b.time||''));
@@ -470,6 +502,7 @@
     return card;
   }
   function renderAll(){
+    updateGenderButtons();
     renderHeader(); renderConfig(); renderTeams(); renderSchedule();
     renderMatchesList(el.standings.viewMatches); renderStandingsTable(el.standings.viewTable);
     renderTV();
@@ -718,17 +751,34 @@ Digite como A-B (ex.: 6-4)`, `${curA}-${curB}`);
     save(); renderAll();
   });
   $('#btn-load').addEventListener('click', load);
-  $('#btn-export').addEventListener('click', ()=> download(`torneio-beach-tennis.json`, JSON.stringify(state,null,2)) );
+   $('#btn-export').addEventListener('click', ()=> download(`torneio-beach-tennis.json`, JSON.stringify({states, curGender},null,2)) );
   $('#file-import').addEventListener('change', (ev)=>{
     const f = ev.target.files?.[0]; if(!f) return;
     const reader = new FileReader();
     reader.onload = ()=>{
       try{ const obj = JSON.parse(reader.result);
-        Object.assign(state, obj); renderAll(); save();
+        if(obj.states){
+          states.M = obj.states.M || newState();
+          states.F = obj.states.F || newState();
+          curGender = obj.curGender || 'M';
+        } else {
+          states.M = obj; states.F = newState(); curGender = 'M';
+        }
+        state = states[curGender];
+        renderAll(); save();
       }catch(e){ alert('Arquivo inválido'); }
     };
     reader.readAsText(f);
   });
+     if(obj.states){
+          states.M = obj.states.M || newState();
+          states.F = obj.states.F || newState();
+          curGender = obj.curGender || 'M';
+        } else {
+          states.M = obj; states.F = newState(); curGender = 'M';
+        }
+        state = states[curGender];
+        renderAll(); save();
   el.inputs.format.addEventListener('change', ()=>{ state.tournament.format = el.inputs.format.value; renderConfig(); });
 
   // TEAMS events
