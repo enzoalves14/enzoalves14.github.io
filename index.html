@@ -64,6 +64,11 @@
     .switch button[aria-pressed="true"]{background:#1a2558}
     .small{font-size:12px}
     .danger{color:#ff9aa2}
+     tr.champion{animation:champion-pulse 1s ease-in-out infinite}
+    @keyframes champion-pulse{
+      0%,100%{background:rgba(133,255,166,.15);}
+      50%{background:rgba(133,255,166,.3);}
+    }
     @media (max-width: 840px){
       .tv .grid-tv{grid-template-columns:1fr}
     }
@@ -443,15 +448,29 @@ function setGender(g){
     sorted.forEach(m=> ul.appendChild(renderMatchRow(m)) );
     container.appendChild(ul);
   }
+     function getChampionId(){
+    const finals = state.matches.filter(m=> m.stage==='knockout' && m.done);
+    if(finals.length===0) return null;
+    const finalRound = Math.max(...finals.map(m=> m.round));
+    const final = finals.find(m=> m.round===finalRound);
+    if(!final || final.scoreA===final.scoreB) return null;
+    return final.scoreA>final.scoreB ? final.a : final.b;
+  }
   function renderStandingsTable(container){
     const table = computeStandings();
     container.innerHTML = '';
     const t = document.createElement('table');
     t.innerHTML = `<thead><tr><th>#</th><th>Dupla</th><th>J</th><th>V</th><th>D</th><th>GF</th><th>GC</th><th>Saldo</th></tr></thead>`;
     const tb = document.createElement('tbody');
+    const champ = getChampionId();
     table.forEach((row,i)=>{
       const tr = document.createElement('tr');
       tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(duoName(byId(row.id, state.teams)))}</td><td>${row.PJ}</td><td>${row.V}</td><td>${row.D}</td><td>${row.GF}</td><td>${row.GC}</td><td>${row.S}</td>`;
+       if(row.id===champ){
+        tr.classList.add('champion');
+        const td = tr.querySelector('td:nth-child(2)');
+        td.innerHTML = '🏆 ' + td.innerHTML;
+      }
       tb.appendChild(tr);
     });
     t.appendChild(tb); container.appendChild(t);
