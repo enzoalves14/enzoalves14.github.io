@@ -770,15 +770,7 @@ Digite como A-B (ex.: 6-4)`, `${curA}-${curB}`);
     };
     reader.readAsText(f);
   });
-     if(obj.states){
-          states.M = obj.states.M || newState();
-          states.F = obj.states.F || newState();
-          curGender = obj.curGender || 'M';
-        } else {
-          states.M = obj; states.F = newState(); curGender = 'M';
-        }
-        state = states[curGender];
-        renderAll(); save();
+     
   el.inputs.format.addEventListener('change', ()=>{ state.tournament.format = el.inputs.format.value; renderConfig(); });
 
   // TEAMS events
