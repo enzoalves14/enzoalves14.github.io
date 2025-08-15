@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beach Tennis — Gerência de Torneio</title>
+  <meta name="description" content="App para gerenciar torneios de Beach Tennis: duplas, grupos, tabela, mata-mata e Modo TV." />
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#121935; --muted:#7982a9; --text:#ecf2ff; --accent:#67d2ff; --accent2:#85ffa6; --danger:#ff7b85; --card:#0f1630;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Helvetica,Arial,sans-serif;background:radial-gradient(1200px 600px at 10% -10%,#1e2a60 0%, transparent 60%), linear-gradient(180deg,#0b1020 0%, #0b1020 60%, #0a0e1b 100%);color:var(--text)}
+    header{position:sticky;top:0;z-index:10;backdrop-filter:saturate(1.2) blur(8px);background:rgba(11,16,32,.6);border-bottom:1px solid #1d2448}
+    .wrap{max-width:1100px;margin:0 auto;padding:16px}
+    .brand{display:flex;gap:12px;align-items:center;font-weight:800;letter-spacing:.3px}
+    .brand svg{width:28px;height:28px}
+    nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .tab-btn{appearance:none;border:1px solid #202955;background:linear-gradient(180deg,#172044,#111936);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:600;transition:.2s;box-shadow:0 2px 0 #0b1126}
+    .tab-btn[aria-selected="true"]{border-color:#2a3b8a;outline:2px solid #2a3b8a}
+    .grid{display:grid;gap:14px}
+    .panel{background:linear-gradient(180deg,#121935,#0d1430);border:1px solid #202955;border-radius:16px;box-shadow:var(--shadow);padding:16px}
+    h2{margin:0 0 12px 0;font-size:18px;color:#cfe1ff}
+    label{display:block;font-size:14px;color:#c6d1ff;margin-bottom:6px}
+    input, select, textarea{width:100%;background:#0c1430;color:var(--text);border:1px solid #243065;border-radius:12px;padding:10px 12px;outline:none}
+    input:focus, select:focus, textarea:focus{border-color:#3e5ce6;box-shadow:0 0 0 3px rgba(62,92,230,.25)}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row > *{flex:1 1 240px}
+    .btn{appearance:none;border:1px solid #1f285a;background:linear-gradient(180deg,#1a2a6a,#18245a);color:#e6f0ff;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;transition:transform .05s ease,filter .2s}
+    .btn:active{transform:translateY(1px)}
+    .btn.secondary{background:linear-gradient(180deg,#15224f,#121a44)}
+    .btn.ghost{background:transparent;border-color:#2a3a86}
+    .btn.green{background:linear-gradient(180deg,#1c6a3b,#164b2a);border-color:#2e8f51}
+    .btn.red{background:linear-gradient(180deg,#6a1c2e,#4b1622);border-color:#8f2e4a}
+    .muted{color:var(--muted);font-size:13px}
+    table{width:100%;border-collapse:collapse;border:1px solid #1d264f;border-radius:12px;overflow:hidden}
+    th,td{padding:10px 8px;border-bottom:1px solid #1d264f;text-align:left}
+    th{background:#141c3e;color:#cfe1ff;position:sticky;top:0;z-index:1}
+    tr:nth-child(even){background:#0e1532}
+    .stack{display:flex;flex-direction:column;gap:10px}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#0f1a3f;border:1px solid #223071;font-size:12px}
+    .right{margin-left:auto}
+    .hidden{display:none}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:12px}
+    .kpi{background:linear-gradient(180deg,#0f1630,#0b132e);border:1px solid #21306c;border-radius:14px;padding:12px}
+    .kpi .label{color:#9fb2ff;font-size:12px}
+    .kpi .value{font-size:22px;font-weight:800}
+    .divider{height:1px;background:#202955;margin:6px 0 12px}
+    /* TV Mode */
+    .tv{font-size:18px}
+    .tv .big{font-size:42px;font-weight:900;letter-spacing:.6px}
+    .tv .grid-tv{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+    .card{background:linear-gradient(180deg,#0f1630,#0a1128);border:1px solid #22306e;border-radius:16px;padding:14px}
+    .match{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border:1px solid #21306c;border-radius:10px;margin:6px 0;background:#0b142f}
+    .team{display:flex;gap:8px;align-items:center}
+    .badge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;background:#1a2558;border:1px solid #2a3a86;font-size:12px;color:#bcd1ff}
+    .score{font-weight:900;font-size:18px}
+    .tag{font-size:12px;padding:4px 8px;border:1px solid #2c3b86;border-radius:999px;color:#b7c8ff}
+    .nowrap{white-space:nowrap}
+    .switch{display:inline-flex;border:1px solid #29377e;border-radius:10px;overflow:hidden}
+    .switch button{border:none;background:transparent;color:#cfe1ff;padding:6px 10px;cursor:pointer}
+    .switch button[aria-pressed="true"]{background:#1a2558}
+    .small{font-size:12px}
+    .danger{color:#ff9aa2}
+    @media (max-width: 840px){
+      .tv .grid-tv{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand" aria-label="Beach Tennis Manager">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#67d2ff" stroke-width="2"/><path d="M6 10c3 2 9 2 12-1" stroke="#85ffa6" stroke-width="2"/><path d="M9 6c2 3 4 7 6 12" stroke="#67d2ff" stroke-width="2"/></svg>
+        <span>Beach Tennis — Gerência de Torneio</span>
+        <span class="pill right" id="tour-pill">Sem torneio</span>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Seções">
+        <button class="tab-btn" role="tab" aria-selected="true" data-tab="config">Configurações</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="teams">Duplas</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="schedule">Tabela</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="standings">Resultados & Classificação</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="tv">Modo TV</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap" id="app">
+    <!-- CONFIG -->
+    <section id="tab-config" class="grid" role="tabpanel">
+      <div class="panel">
+        <h2>Dados do Torneio</h2>
+        <div class="row">
+          <div>
+            <label for="tour-name">Nome</label>
+            <input id="tour-name" placeholder="Ex.: Desafio da Areia 2025" />
+          </div>
+          <div>
+            <label for="tour-date">Data</label>
+            <input id="tour-date" type="date" />
+          </div>
+          <div>
+            <label for="tour-local">Local</label>
+            <input id="tour-local" placeholder="Cidade / Clube" />
+          </div>
+          <div>
+            <label for="tour-format">Formato</label>
+            <select id="tour-format">
+              <option value="roundrobin">Fase Única — Todos contra todos</option>
+              <option value="groups" selected>Fase de Grupos → Mata-mata</option>
+              <option value="elimination">Mata-mata — Eliminação Simples</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="tour-sets">Melhor de</label>
+            <select id="tour-sets">
+              <option value="1">1 set</option>
+              <option value="3" selected>3 sets</option>
+            </select>
+            <div class="muted small">* Classificação usa Vitórias, Games Vencidos e Saldo de Games.</div>
+          </div>
+          <div>
+            <label for="tour-courts">Nº de quadras</label>
+            <input id="tour-courts" type="number" min="1" value="2" />
+          </div>
+          <div data-groups>
+            <label for="tour-groups">Nº de grupos</label>
+            <input id="tour-groups" type="number" min="2" value="2" />
+          </div>
+          <div>
+            <label for="tour-notes">Observações</label>
+            <input id="tour-notes" placeholder="Regras extras, dress code, etc." />
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn" id="btn-new">Novo torneio</button>
+          <button class="btn green" id="btn-save">Salvar</button>
+          <button class="btn secondary" id="btn-load">Carregar</button>
+          <button class="btn ghost" id="btn-export">Exportar JSON</button>
+          <label class="btn ghost right" for="file-import" style="cursor:pointer">Importar JSON</label>
+          <input class="hidden" id="file-import" type="file" accept="application/json" />
+        </div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="label">Duplas</div><div class="value" id="kpi-teams">0</div></div>
+        <div class="kpi"><div class="label">Partidas</div><div class="value" id="kpi-matches">0</div></div>
+        <div class="kpi"><div class="label">Concluídas</div><div class="value" id="kpi-done">0</div></div>
+        <div class="kpi"><div class="label">Pendentes</div><div class="value" id="kpi-todo">0</div></div>
+      </div>
+    </section>
+
+    <!-- TEAMS (DUPLAS) -->
+    <section id="tab-teams" class="grid hidden" role="tabpanel">
+      <div class="panel">
+        <h2>Cadastro de Duplas</h2>
+        <div class="row">
+          <div>
+            <label for="player-a">Jogador(a) 1</label>
+            <input id="player-a" placeholder="Nome do(a) jogador(a) 1" />
+          </div>
+          <div>
+            <label for="player-b">Jogador(a) 2</label>
+            <input id="player-b" placeholder="Nome do(a) jogador(a) 2" />
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn" id="btn-add-team">Adicionar dupla</button>
+          <button class="btn ghost" id="btn-sample">Adicionar 8 duplas de exemplo</button>
+          <div class="right muted small">Dica: cadastre todas as duplas antes de gerar a tabela.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="stack">
+          <table id="tbl-teams">
+            <thead>
+              <tr><th>#</th><th>Dupla</th><th class="nowrap">Ações</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCHEDULE -->
+    <section id="tab-schedule" class="grid hidden" role="tabpanel">
+      <div class="panel">
+        <h2>Geração da Tabela</h2>
+        <div class="row">
+          <div>
+            <label>Formato selecionado</label>
+            <div class="pill" id="format-pill">—</div>
+          </div>
+          <div>
+            <label>Operações</label>
+            <div class="row">
+              <button class="btn" id="btn-generate">Gerar Tabela</button>
+              <button class="btn secondary" id="btn-clear-schedule">Limpar Tabela</button>
+              <button class="btn ghost" id="btn-auto-assign">Distribuir horários/quadras</button>
+              <button class="btn" id="btn-gen-ko" title="Gera o mata-mata após concluir a fase de grupos">Gerar Mata‑mata (Top 2 de cada grupo)</button>
+            </div>
+            <div class="muted small">A distribuição automática usa o nº de quadras e empilha por rodada.</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="stack" id="schedule-list"></div>
+      </div>
+    </section>
+
+    <!-- STANDINGS -->
+    <section id="tab-standings" class="grid hidden" role="tabpanel">
+      <div class="panel">
+        <h2>Resultados & Classificação</h2>
+        <div class="row">
+          <div class="switch" role="group" aria-label="Exibição">
+            <button id="btn-view-matches" aria-pressed="true">Partidas</button>
+            <button id="btn-view-table" aria-pressed="false">Classificação</button>
+          </div>
+          <div class="right muted small">Clique no placar para editar. Critérios: Vitórias → Games Vencidos → Saldo.</div>
+        </div>
+        <div class="divider"></div>
+        <div id="view-matches"></div>
+        <div id="view-standings" class="hidden"></div>
+      </div>
+    </section>
+
+    <!-- TV MODE -->
+    <section id="tab-tv" class="grid hidden" role="tabpanel">
+      <div class="card tv">
+        <div class="row" style="align-items:center">
+          <div class="big">🎾 Modo TV</div>
+          <div class="right">
+            <span class="tag" id="tv-tour-name">—</span>
+            <span class="tag" id="tv-tour-info">—</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="grid-tv">
+          <div>
+            <div class="muted">Próximas partidas</div>
+            <div id="tv-upcoming"></div>
+          </div>
+          <div>
+            <div class="muted">Resultados recentes</div>
+            <div id="tv-recent"></div>
+            <div style="margin-top:12px" id="tv-groups-wrap">
+              <div class="muted">Classificação por grupo</div>
+              <div id="tv-groups"></div>
+            </div>
+            <div style="margin-top:12px">
+              <div class="muted">Classificação geral (fase de grupos)</div>
+              <div id="tv-overall"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <template id="tpl-match-item">
+    <div class="match">
+      <div class="team"><span class="badge">A</span> <span class="tA">Dupla A</span></div>
+      <div class="score nowrap"><button class="btn ghost small btn-edit">0 - 0</button></div>
+      <div class="team right"><span class="tB">Dupla B</span> <span class="badge">B</span></div>
+    </div>
+  </template>
+
+  <template id="tpl-schedule-round">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="pill">Rodada <span class="round-index">1</span></div>
+        <div class="muted small right">Partidas: <span class="round-count">0</span></div>
+      </div>
+      <div class="stack round-matches" style="margin-top:8px"></div>
+    </div>
+  </template>
+
+  <script>
+  // ======= STATE =======
+  const state = {
+    tournament: {
+      name: '', date: '', local: '', format: 'groups', bestOf: 3, courts: 2, notes: '', groups: 2
+    },
+    teams: [], // {id, a, b}
+    matches: [], // {id, stage:'group'|'knockout'|null, group:'A'|'B'|null, round, a, b, scoreA, scoreB, done, court, time, nextId, nextSlot}
+    seq: 1
+  };
+  const $ = (sel, el=document)=>el.querySelector(sel);
+  const $$ = (sel, el=document)=>Array.from(el.querySelectorAll(sel));
+  const el = {
+    tabs: $$('.tab-btn', document),
+    panels: [$('#tab-config'), $('#tab-teams'), $('#tab-schedule'), $('#tab-standings'), $('#tab-tv')],
+    pill: $('#tour-pill'),
+    kpiTeams: $('#kpi-teams'), kpiMatches: $('#kpi-matches'), kpiDone: $('#kpi-done'), kpiTodo: $('#kpi-todo'),
+    inputs: {
+      name: $('#tour-name'), date: $('#tour-date'), local: $('#tour-local'), format: $('#tour-format'), bestOf: $('#tour-sets'), courts: $('#tour-courts'), notes: $('#tour-notes'), groups: $('#tour-groups')
+    },
+    teams: { table: $('#tbl-teams tbody'), a: $('#player-a'), b: $('#player-b') },
+    schedule: { list: $('#schedule-list'), pill: $('#format-pill'), btnGenKO: $('#btn-gen-ko') },
+    standings: { btnMatches: $('#btn-view-matches'), btnTable: $('#btn-view-table'), viewMatches: $('#view-matches'), viewTable: $('#view-standings') },
+    tv: { name: $('#tv-tour-name'), info: $('#tv-tour-info'), upcoming: $('#tv-upcoming'), recent: $('#tv-recent'), groups: $('#tv-groups'), overall: $('#tv-overall'), groupsWrap: $('#tv-groups-wrap') }
+  };
+
+  // ======= UTIL =======
+  function uid(){ return state.seq++; }
+  function save(){
+    localStorage.setItem('btm_state', JSON.stringify(state));
+    tick();
+  }
+  function load(){
+    const raw = localStorage.getItem('btm_state');
+    if(!raw) return;
+    const obj = JSON.parse(raw);
+    Object.assign(state, obj);
+    renderAll();
+  }
+  function reset(){
+    state.tournament = { name:'', date:'', local:'', format:'groups', bestOf:3, courts:2, notes:'', groups:2 };
+    state.teams = [];
+    state.matches = [];
+    state.seq = 1;
+    renderAll(); save();
+  }
+  function duoName(t){ if(!t) return '—'; return `${t.a} & ${t.b}`; }
+  function byId(id, arr){ return arr.find(x=>x.id===id); }
+  function download(filename, text){
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], {type:'application/json'}));
+    a.download = filename; a.click(); URL.revokeObjectURL(a.href);
+  }
+  function letters(n){ const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ'; return Array.from({length:n}, (_,i)=>A[i]||String(i+1)); }
+
+  // ======= RENDER =======
+  function renderHeader(){
+    const t = state.tournament;
+    el.pill.textContent = t.name ? `${t.name}${t.date? ' • ' + t.date : ''}` : 'Sem torneio';
+  }
+  function renderConfig(){
+    const t = state.tournament;
+    el.inputs.name.value = t.name; el.inputs.date.value = t.date; el.inputs.local.value = t.local; el.inputs.format.value = t.format; el.inputs.bestOf.value = String(t.bestOf); el.inputs.courts.value = t.courts; el.inputs.notes.value = t.notes; el.inputs.groups.value = t.groups || 2;
+    const fmtText = t.format === 'roundrobin' ? 'Todos contra todos' : (t.format==='groups' ? 'Fase de Grupos → Mata‑mata' : 'Eliminação simples');
+    el.schedule.pill.textContent = fmtText;
+    // Mostrar/ocultar campo de grupos
+    const grpEl = document.querySelector('[data-groups]');
+    if(t.format==='groups'){ grpEl.classList.remove('hidden'); } else { grpEl.classList.add('hidden'); }
+    tick();
+  }
+  function renderTeams(){
+    el.teams.table.innerHTML = '';
+    state.teams.forEach((t,i)=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(duoName(t))}</td><td class="nowrap">`+
+        `<button class="btn small ghost" data-act="up" data-id="${t.id}">↑</button> `+
+        `<button class="btn small ghost" data-act="down" data-id="${t.id}">↓</button> `+
+        `<button class="btn small" data-act="edit" data-id="${t.id}">Editar</button> `+
+        `<button class="btn small red" data-act="del" data-id="${t.id}">Excluir</button>`+
+        `</td>`;
+      el.teams.table.appendChild(tr);
+    });
+  }
+  function renderSchedule(){
+    el.schedule.list.innerHTML = '';
+    const grouped = groupBy(state.matches, m=>m.round);
+    const rounds = Object.keys(grouped).sort((a,b)=>Number(a)-Number(b));
+    if(rounds.length===0){ el.schedule.list.innerHTML = `<div class="muted">Nenhuma partida gerada ainda.</div>`; return; }
+    rounds.forEach(r=>{
+      const wrap = document.importNode($('#tpl-schedule-round').content, true);
+      wrap.querySelector('.round-index').textContent = r;
+      const cont = wrap.querySelector('.round-matches');
+      grouped[r].forEach(m=> cont.appendChild(renderMatchRow(m)) );
+      wrap.querySelector('.round-count').textContent = grouped[r].length;
+      el.schedule.list.appendChild(wrap);
+    });
+  }
+  function renderMatchRow(m){
+    const node = document.importNode($('#tpl-match-item').content, true);
+    node.querySelector('.tA').textContent = duoName(byId(m.a, state.teams));
+    node.querySelector('.tB').textContent = duoName(byId(m.b, state.teams));
+    const btn = node.querySelector('.btn-edit');
+    btn.textContent = `${m.scoreA ?? 0} - ${m.scoreB ?? 0}`;
+    btn.addEventListener('click', ()=> editScore(m.id));
+
+    const meta = document.createElement('div');
+    meta.className='muted small right';
+    const bits = [];
+    if(m.stage==='group' && m.group) bits.push(`Grupo ${m.group}`);
+    if(m.time) bits.push(`⏰ ${m.time}`);
+    if(m.court) bits.push(`• 🏟️ Quadra ${m.court}`);
+    if(m.done) bits.push(`• ✅`);
+    meta.innerHTML = bits.join(' ');
+    node.querySelector('.match').appendChild(meta);
+
+    const host = document.createElement('div'); host.appendChild(node);
+    return host.firstElementChild;
+  }
+  function renderMatchesList(container){
+    container.innerHTML = '';
+    if(state.matches.length===0){ container.innerHTML = `<div class="muted">Sem partidas.</div>`; return; }
+    const ul = document.createElement('div');
+    const sorted = [...state.matches].sort((a,b)=> (a.round-b.round) || (a.time||'').localeCompare(b.time||'') );
+    sorted.forEach(m=> ul.appendChild(renderMatchRow(m)) );
+    container.appendChild(ul);
+  }
+  function renderStandingsTable(container){
+    const table = computeStandings();
+    container.innerHTML = '';
+    const t = document.createElement('table');
+    t.innerHTML = `<thead><tr><th>#</th><th>Dupla</th><th>J</th><th>V</th><th>D</th><th>GF</th><th>GC</th><th>Saldo</th></tr></thead>`;
+    const tb = document.createElement('tbody');
+    table.forEach((row,i)=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(duoName(byId(row.id, state.teams)))}</td><td>${row.PJ}</td><td>${row.V}</td><td>${row.D}</td><td>${row.GF}</td><td>${row.GC}</td><td>${row.S}</td>`;
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb); container.appendChild(t);
+  }
+  function renderTV(){
+    const t = state.tournament;
+    el.tv.name.textContent = t.name || '—';
+    el.tv.info.textContent = [t.local||'', t.date||''].filter(Boolean).join(' • ') || '—';
+
+    const upcoming = state.matches.filter(m=>!m.done).sort((a,b)=> (a.round-b.round) || (a.time||'').localeCompare(b.time||''));
+    const recent = state.matches.filter(m=>m.done).sort((a,b)=> (b.id - a.id) );
+
+    el.tv.upcoming.innerHTML = '';
+    upcoming.slice(0,6).forEach(m=> el.tv.upcoming.appendChild(renderMatchRow(m)) );
+    el.tv.recent.innerHTML = '';
+    recent.slice(0,6).forEach(m=> el.tv.recent.appendChild(renderMatchRow(m)) );
+
+    // === Classificação por grupo (fase de grupos)
+    el.tv.groups.innerHTML = '';
+    const groupsSet = new Set(state.matches.filter(m=>m.stage==='group').map(m=>m.group));
+    const lettersArr = Array.from(groupsSet).sort();
+    if(lettersArr.length===0){ el.tv.groupsWrap.classList.add('hidden'); }
+    else {
+      el.tv.groupsWrap.classList.remove('hidden');
+      lettersArr.forEach(g=>{
+        const ids = uniqueTeamsInGroup(g);
+        const table = computeStandings({ matchesFilter: (m)=> m.stage==='group' && m.group===g, teamIds: ids });
+        el.tv.groups.appendChild(renderMiniTable(`Grupo ${g}`, table));
+      });
+    }
+
+    // === Classificação geral (somente jogos da fase de grupos)
+    const allIds = uniqueTeamsAllGroups();
+    const overall = computeStandings({ matchesFilter: (m)=> m.stage==='group', teamIds: allIds });
+    el.tv.overall.innerHTML = '';
+    el.tv.overall.appendChild(renderMiniTable('Geral', overall));
+  }
+  function renderMiniTable(title, rows){
+    const card = document.createElement('div');
+    card.className = 'card';
+    const h = document.createElement('div');
+    h.className = 'muted';
+    h.textContent = title;
+    const t = document.createElement('table');
+    const thead = document.createElement('thead');
+    thead.innerHTML = `<tr><th>#</th><th>Dupla</th><th>V</th><th>GF</th><th>GC</th><th>S</th></tr>`;
+    const tb = document.createElement('tbody');
+    rows.forEach((r,i)=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${i+1}</td><td>${escapeHtml(duoName(byId(r.id, state.teams)))}</td><td>${r.V}</td><td>${r.GF}</td><td>${r.GC}</td><td>${r.S}</td>`;
+      tb.appendChild(tr);
+    });
+    t.appendChild(thead); t.appendChild(tb);
+    card.appendChild(h); card.appendChild(t);
+    return card;
+  }
+  function renderAll(){
+    renderHeader(); renderConfig(); renderTeams(); renderSchedule();
+    renderMatchesList(el.standings.viewMatches); renderStandingsTable(el.standings.viewTable);
+    renderTV();
+  }
+  function tick(){
+    el.kpiTeams.textContent = String(state.teams.length);
+    const done = state.matches.filter(m=>m.done).length;
+    el.kpiDone.textContent = String(done);
+    el.kpiMatches.textContent = String(state.matches.length);
+    el.kpiTodo.textContent = String(state.matches.length - done);
+    // botão KO visível só em grupos
+    el.schedule.btnGenKO.style.display = state.tournament.format==='groups' ? 'inline-block' : 'none';
+  }
+
+  // ======= MATCH / SCORE DIALOG =======
+  function editScore(id){
+    const m = byId(id, state.matches); if(!m) return;
+    const teamA = duoName(byId(m.a, state.teams));
+    const teamB = duoName(byId(m.b, state.teams));
+    const curA = m.scoreA ?? 0, curB = m.scoreB ?? 0;
+    const s = prompt(`Placar ${teamA} x ${teamB}
+Digite como A-B (ex.: 6-4)`, `${curA}-${curB}`);
+    if(!s) return;
+    const [a,b] = s.split('-').map(x=>parseInt(x.trim(),10));
+    if(Number.isNaN(a)||Number.isNaN(b)){ alert('Formato inválido. Use A-B, ex.: 6-4'); return; }
+    m.scoreA = a; m.scoreB = b; m.done = true;
+    // propaga vencedor se houver próximo (mata-mata)
+    if(m.nextId){
+      const next = byId(m.nextId, state.matches);
+      if(next){ const winner = (a>b?m.a:m.b); if(m.nextSlot==='A') next.aWinner = winner; else next.bWinner = winner;
+        if(next.a===null && next.aWinner) next.a = next.aWinner;
+        if(next.b===null && next.bWinner) next.b = next.bWinner;
+      }
+    }
+    save(); renderAll();
+  }
+
+  // ======= SCHEDULE GENERATION =======
+  function generate(){
+    const fmt = state.tournament.format;
+    if(state.teams.length < 2){ alert('Cadastre pelo menos 2 duplas.'); return; }
+    state.matches = [];
+    if(fmt==='roundrobin') genRoundRobin();
+    else if(fmt==='elimination') genElimination();
+    else if(fmt==='groups') genGroups();
+    autoAssign();
+    save(); renderAll();
+  }
+  function genRoundRobin(){
+    const ids = state.teams.map(t=>t.id);
+    if(ids.length%2===1) ids.push(null); // bye
+    const n = ids.length; const rounds = n-1; const half=n/2;
+    const arr = ids.slice();
+    for(let r=1;r<=rounds;r++){
+      for(let i=0;i<half;i++){
+        const a = arr[i], b = arr[n-1-i];
+        if(a!==null && b!==null){
+          state.matches.push({id:uid(), stage:null, group:null, round:r, a, b, scoreA:null, scoreB:null, done:false, court:null, time:null});
+        }
+      }
+      const fixed = arr[0]; const tail = arr.slice(1); tail.unshift(tail.pop()); arr.splice(1,tail.length,...tail); arr[0]=fixed;
+    }
+  }
+  function genGroups(){
+    const G = Math.max(2, parseInt(state.tournament.groups,10)||2);
+    if(G>state.teams.length){ alert('Nº de grupos maior que nº de duplas.'); return; }
+    const ids = state.teams.map(t=>t.id);
+    // distribuição snake para equilibrar
+    const groups = Array.from({length:G}, ()=>[]);
+    let idx=0, dir=1; ids.forEach(id=>{ groups[idx].push(id); idx+=dir; if(idx===G){ idx=G-1; dir=-1;} if(idx<0){idx=0; dir=1;} });
+    const lettersArr = letters(G);
+    // Round-robin dentro de cada grupo (mesmo número de rodadas para todos)
+    let maxRounds = 0;
+    groups.forEach((g,i)=>{ if(g.length%2===1) g.push(null); const n=g.length, rounds=n-1, half=n/2; maxRounds=Math.max(maxRounds, rounds); });
+    for(let r=1;r<=maxRounds;r++){
+      groups.forEach((g,i)=>{
+        // rotações independentes por grupo — copiamos e rotacionamos por rodada
+        const arr = rotateForRound(g, r);
+        const n = arr.length, half=n/2;
+        for(let k=0;k<half;k++){
+          const a = arr[k], b = arr[n-1-k];
+          if(a!==null && b!==null){
+            state.matches.push({id:uid(), stage:'group', group:lettersArr[i], round:r, a, b, scoreA:null, scoreB:null, done:false, court:null, time:null});
+          }
+        }
+      });
+    }
+  }
+  function rotateForRound(arr, r){
+    const base = arr.slice();
+    const fixed = base[0];
+    const tail = base.slice(1);
+    // aplicar r-1 rotações
+    for(let i=0;i<r-1;i++){ tail.unshift(tail.pop()); }
+    const res = [fixed, ...tail];
+    return res;
+  }
+  function genElimination(){
+    // usa todas as duplas na ordem de cadastro
+    const teams = state.teams.map(t=>t.id);
+    genEliminationFromList(teams, 1);
+  }
+  function genEliminationFromList(orderedIds, startRound){
+    const n = orderedIds.length; const p2 = 1 << Math.ceil(Math.log2(n));
+    const seedsPos = seedingOrder(p2); // posições 1..p2
+    const bracket = new Array(p2).fill(null);
+    for(let i=0;i<n;i++){ const pos = seedsPos[i]-1; bracket[pos] = orderedIds[i]; }
+    // primeira rodada
+    let round = startRound; let matchesRound = [];
+    for(let i=0;i<p2;i+=2){
+      const a = bracket[i] ?? null; const b = bracket[i+1] ?? null;
+      const mId = uid();
+      const m = {id:mId, stage:'knockout', group:null, round, a:a, b:b, scoreA:null, scoreB:null, done:false, court:null, time:null, nextId:null, nextSlot:null};
+      matchesRound.push(m); state.matches.push(m);
+    }
+    // seguintes rodadas
+    let prev = matchesRound;
+    while(prev.length>1){
+      round++;
+      const cur = [];
+      for(let i=0;i<prev.length;i+=2){
+        const mId = uid();
+        const m = {id:mId, stage:'knockout', group:null, round, a:null, b:null, scoreA:null, scoreB:null, done:false, court:null, time:null, nextId:null, nextSlot:null};
+        prev[i].nextId = mId; prev[i].nextSlot='A';
+        if(prev[i+1]){ prev[i+1].nextId = mId; prev[i+1].nextSlot='B'; }
+        cur.push(m); state.matches.push(m);
+      }
+      prev = cur;
+    }
+    // byes
+    state.matches.filter(m=>m.stage==='knockout' && m.round===startRound).forEach(m=>{
+      if(m.a && !m.b){ m.scoreA=1; m.scoreB=0; m.done=true; pushWinner(m, m.a); }
+      if(!m.a && m.b){ m.scoreA=0; m.scoreB=1; m.done=true; pushWinner(m, m.b); }
+    });
+  }
+  function pushWinner(m, teamId){
+    if(m.nextId){ const next = byId(m.nextId, state.matches); if(next){ if(m.nextSlot==='A'){ next.a = teamId; } else { next.b = teamId; } } }
+  }
+  // seeding order for power-of-two (1..N)
+  function seedingOrder(n){
+    if(n===2) return [1,2];
+    const prev = seedingOrder(n/2);
+    const mirror = prev.map(x=> n+1 - x);
+    const res = [];
+    for(let i=0;i<prev.length;i++) res.push(prev[i], mirror[i]);
+    return res;
+  }
+
+  // ======= KO FROM GROUPS =======
+  function generateKOFromGroups(){
+    // verificar se todas partidas de grupos terminaram
+    const groupsSet = new Set(state.matches.filter(m=>m.stage==='group').map(m=>m.group));
+    if(groupsSet.size===0){ alert('Gere a fase de grupos primeiro.'); return; }
+    for(const g of groupsSet){
+      const pend = state.matches.some(m=> m.stage==='group' && m.group===g && !m.done);
+      if(pend){ alert(`Ainda há partidas pendentes no Grupo ${g}. Finalize todas antes do mata‑mata.`); return; }
+    }
+    // calcular top2 de cada grupo
+    const qualifiers = [];
+    for(const g of groupsSet){
+      const ids = uniqueTeamsInGroup(g);
+      const table = computeStandings({ matchesFilter: (m)=> m.stage==='group' && m.group===g, teamIds: ids });
+      const top2 = table.slice(0,2).map(r=>({ id:r.id, V:r.V, GF:r.GF, S:r.S, GC:r.GC }));
+      qualifiers.push(...top2);
+    }
+    // ranking global: Vitórias desc, GF desc, Saldo desc, GC asc
+    qualifiers.sort((a,b)=> (b.V-a.V) || (b.GF-a.GF) || (b.S-a.S) || (a.GC-b.GC) );
+    const orderedIds = qualifiers.map(q=>q.id);
+    const maxRoundGroup = Math.max(0, ...state.matches.filter(m=>m.stage==='group').map(m=>m.round));
+    genEliminationFromList(orderedIds, maxRoundGroup + 1);
+    autoAssign(); save(); renderAll();
+    alert('Mata‑mata gerado a partir dos grupos (top 2 de cada).');
+  }
+  function uniqueTeamsInGroup(g){
+    const set = new Set();
+    state.matches.filter(m=>m.stage==='group' && m.group===g).forEach(m=>{ set.add(m.a); set.add(m.b); });
+    return Array.from(set);
+  }
+  function uniqueTeamsAllGroups(){
+    const set = new Set();
+    state.matches.filter(m=>m.stage==='group').forEach(m=>{ set.add(m.a); set.add(m.b); });
+    return Array.from(set);
+  }
+
+  // ======= AUTO ASSIGN =======
+  function autoAssign(){
+    const courts = Math.max(1, parseInt(state.tournament.courts,10)||1);
+    const rounds = [...new Set(state.matches.map(m=>m.round))].sort((a,b)=>a-b);
+    let start = new Date();
+    if(state.tournament.date){ start = new Date(state.tournament.date + 'T08:00'); }
+    let cur = new Date(start);
+    const slotMins = 35; // ajuste rápido
+    rounds.forEach(r=>{
+      const batch = state.matches.filter(m=>m.round===r);
+      for(let i=0;i<batch.length;i++){
+        const block = Math.floor(i / courts);
+        const court = (i % courts) + 1;
+        const when = addMinutes(cur, block*slotMins);
+        batch[i].time = fmtTime(when);
+        batch[i].court = court;
+      }
+      cur = addMinutes(cur, Math.ceil(batch.length/courts)*slotMins + 10); // respiro
+    });
+  }
+  function addMinutes(d, mins){ const x = new Date(d); x.setMinutes(x.getMinutes()+mins); return x; }
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function fmtTime(d){ return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+
+  // ======= STANDINGS =======
+  function computeStandings(opts={}){
+    const { matchesFilter=null, teamIds=null } = opts;
+    const map = new Map();
+    let baseTeams = state.teams;
+    if(teamIds){ baseTeams = teamIds.map(id=> byId(id, state.teams)).filter(Boolean); }
+    baseTeams.forEach(t=> map.set(t.id, { id:t.id, PJ:0,V:0,D:0,GF:0,GC:0,S:0 }));
+    state.matches.filter(m=>m.done && (!matchesFilter || matchesFilter(m))).forEach(m=>{
+      const A = map.get(m.a), B = map.get(m.b);
+      if(!A||!B) return;
+      A.PJ++; B.PJ++;
+      A.GF += m.scoreA; A.GC += m.scoreB; A.S = A.GF - A.GC;
+      B.GF += m.scoreB; B.GC += m.scoreA; B.S = B.GF - B.GC;
+      if(m.scoreA>m.scoreB){ A.V++; B.D++; } else if(m.scoreB>m.scoreA){ B.V++; A.D++; }
+    });
+    const arr = Array.from(map.values());
+    arr.sort((x,y)=> (y.V - x.V) || (y.GF - x.GF) || (y.S - x.S) || (x.GC - y.GC) );
+    return arr;
+  }
+
+  // ======= HELPERS =======
+  function groupBy(arr, keyFn){ const m = {}; arr.forEach(x=>{ const k=keyFn(x); (m[k]||(m[k]=[])).push(x) }); return m; }
+  function escapeHtml(str){ return String(str||'').replace(/[&<>"']/g, s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s])); }
+
+  // ======= EVENTS =======
+  el.tabs.forEach(btn=> btn.addEventListener('click', ()=>{
+    el.tabs.forEach(b=> b.setAttribute('aria-selected','false'));
+    btn.setAttribute('aria-selected','true');
+    el.panels.forEach(p=> p.classList.add('hidden'));
+    $('#tab-'+btn.dataset.tab).classList.remove('hidden');
+  }));
+
+  $('#btn-new').addEventListener('click', reset);
+  $('#btn-save').addEventListener('click', ()=>{
+    const t = state.tournament;
+    t.name = el.inputs.name.value.trim(); t.date = el.inputs.date.value; t.local = el.inputs.local.value.trim();
+    t.format = el.inputs.format.value; t.bestOf = parseInt(el.inputs.bestOf.value,10); t.courts = parseInt(el.inputs.courts.value,10)||1; t.notes = el.inputs.notes.value.trim(); t.groups = parseInt(el.inputs.groups.value,10)||2;
+    save(); renderAll();
+  });
+  $('#btn-load').addEventListener('click', load);
+  $('#btn-export').addEventListener('click', ()=> download(`torneio-beach-tennis.json`, JSON.stringify(state,null,2)) );
+  $('#file-import').addEventListener('change', (ev)=>{
+    const f = ev.target.files?.[0]; if(!f) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{ const obj = JSON.parse(reader.result);
+        Object.assign(state, obj); renderAll(); save();
+      }catch(e){ alert('Arquivo inválido'); }
+    };
+    reader.readAsText(f);
+  });
+  el.inputs.format.addEventListener('change', ()=>{ state.tournament.format = el.inputs.format.value; renderConfig(); });
+
+  // TEAMS events
+  $('#btn-add-team').addEventListener('click', ()=>{
+    const a = el.teams.a.value.trim(); const b = el.teams.b.value.trim();
+    if(!a||!b){ alert('Informe os dois nomes da dupla.'); return; }
+    state.teams.push({id:uid(), a, b});
+    el.teams.a.value=''; el.teams.b.value='';
+    save(); renderTeams();
+  });
+  $('#btn-sample').addEventListener('click', ()=>{
+    const samples = [
+      ['Léo','Rafa'],['Bia','Duda'],['Nico','Theo'],['Lia','Ana'],
+      ['Gui','Cauã'],['Ivy','Gaia'],['Tito','Luca'],['Mari','Gabi']
+    ];
+    samples.forEach(([a,b])=> state.teams.push({id:uid(), a, b}));
+    save(); renderTeams();
+  });
+  // teams actions (edit, delete, move)
+  $('#tbl-teams').addEventListener('click', (e)=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    const id = parseInt(btn.dataset.id,10); const t = byId(id, state.teams); const act = btn.dataset.act;
+    if(act==='del'){
+      if(confirm('Excluir esta dupla?')){ state.teams = state.teams.filter(x=>x.id!==id); save(); renderTeams(); }
+    } else if(act==='edit'){
+      const a = prompt('Jogador(a) 1', t.a)||t.a; const b = prompt('Jogador(a) 2', t.b)||t.b;
+      Object.assign(t,{a,b}); save(); renderTeams();
+    } else if(act==='up' || act==='down'){
+      const idx = state.teams.findIndex(x=>x.id===id);
+      const to = act==='up'? idx-1 : idx+1;
+      if(to>=0 && to<state.teams.length){ const [mv]=state.teams.splice(idx,1); state.teams.splice(to,0,mv); save(); renderTeams(); }
+    }
+  });
+
+  // schedule events
+  $('#btn-generate').addEventListener('click', generate);
+  $('#btn-clear-schedule').addEventListener('click', ()=>{ if(confirm('Limpar toda a tabela?')){ state.matches=[]; save(); renderSchedule(); renderMatchesList(el.standings.viewMatches); renderTV(); } });
+  $('#btn-auto-assign').addEventListener('click', ()=>{ autoAssign(); save(); renderSchedule(); renderTV(); });
+  $('#btn-gen-ko').addEventListener('click', generateKOFromGroups);
+
+  // standings view switch
+  el.standings.btnMatches.addEventListener('click', ()=>{
+    el.standings.btnMatches.setAttribute('aria-pressed','true');
+    el.standings.btnTable.setAttribute('aria-pressed','false');
+    el.standings.viewMatches.classList.remove('hidden');
+    el.standings.viewTable.classList.add('hidden');
+  });
+  el.standings.btnTable.addEventListener('click', ()=>{
+    el.standings.btnMatches.setAttribute('aria-pressed','false');
+    el.standings.btnTable.setAttribute('aria-pressed','true');
+    el.standings.viewMatches.classList.add('hidden');
+    el.standings.viewTable.classList.remove('hidden');
+  });
+
+  // boot
+  renderAll();
+  load(); // try load saved state
+  </script>
+</body>
+</html>
