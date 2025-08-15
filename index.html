@@ -736,6 +736,9 @@ Digite como A-B (ex.: 6-4)`, `${curA}-${curB}`);
   function escapeHtml(str){ return String(str||'').replace(/[&<>"']/g, s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s])); }
 
   // ======= EVENTS =======
+    document.querySelectorAll('#gender-switch button, #tv-gender-switch button').forEach(btn=>{
+    btn.addEventListener('click', ()=> setGender(btn.dataset.g));
+  });
   el.tabs.forEach(btn=> btn.addEventListener('click', ()=>{
     el.tabs.forEach(b=> b.setAttribute('aria-selected','false'));
     btn.setAttribute('aria-selected','true');
