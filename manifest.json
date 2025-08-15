@@ -1,0 +1,20 @@
+{
+  "name": "Beach Tennis — Gerência de Torneio",
+  "short_name": "BeachTennis",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0b1020",
+  "theme_color": "#0b1020",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+CjxjaXJjbGUgY3g9JzEyJyBjeT0nMTInIHI9JzEwJyBzdHJva2U9JyM2N2QyZmYnIHN0cm9rZS13aWR0aD0nMicgZmlsbD0nbm9uZScvPgo8cGF0aCBkPSdNNiAxMGMzIDIgOSAyIDEyLTEnIHN0cm9rZT0nIzg1ZmZhNicgc3Ryb2tlLXdpZHRoPScyJyBmaWxsPSdub25lJy8+CjxwYXRoIGQ9J005IDZjMiAzIDQgNyA2IDEyJyBzdHJva2U9JyM2N2QyZmYnIHN0cm9rZS13aWR0aD0nMicgZmlsbD0nbm9uZScvPgo8L3N2Zz4=",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+CjxjaXJjbGUgY3g9JzEyJyBjeT0nMTInIHI9JzEwJyBzdHJva2U9JyM2N2QyZmYnIHN0cm9rZS13aWR0aD0nMicgZmlsbD0nbm9uZScvPgo8cGF0aCBkPSdNNiAxMGMzIDIgOSAyIDEyLTEnIHN0cm9rZT0nIzg1ZmZhNicgc3Ryb2tlLXdpZHRoPScyJyBmaWxsPSdub25lJy8+CjxwYXRoIGQ9J005IDZjMiAzIDQgNyA2IDEyJyBzdHJva2U9JyM2N2QyZmYnIHN0cm9rZS13aWR0aD0nMicgZmlsbD0nbm9uZScvPgo8L3N2Zz4=",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
