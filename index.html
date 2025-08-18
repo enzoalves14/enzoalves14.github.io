@@ -69,6 +69,16 @@
       0%,100%{background:rgba(133,255,166,.15);}
       50%{background:rgba(133,255,166,.3);}
     }
+     #tv-champion{
+      text-align:center;
+      margin-bottom:16px;
+      padding:8px;
+      border:1px solid var(--accent2);
+      border-radius:12px;
+      color:var(--accent2);
+      background:rgba(133,255,166,.15);
+      animation:champion-pulse 1s ease-in-out infinite;
+    }
     @media (max-width: 840px){
       .tv .grid-tv{grid-template-columns:1fr}
     }
@@ -259,6 +269,7 @@
           </div>
         </div>
         <div class="divider"></div>
+        <div id="tv-champion" class="big hidden"></div>
         <div class="grid-tv">
           <div>
             <div class="muted">Próximas partidas</div>
@@ -325,8 +336,7 @@
     teams: { table: $('#tbl-teams tbody'), a: $('#player-a'), b: $('#player-b') },
     schedule: { list: $('#schedule-list'), pill: $('#format-pill'), btnGenKO: $('#btn-gen-ko') },
     standings: { btnMatches: $('#btn-view-matches'), btnTable: $('#btn-view-table'), viewMatches: $('#view-matches'), viewTable: $('#view-standings') },
-    tv: { name: $('#tv-tour-name'), info: $('#tv-tour-info'), upcoming: $('#tv-upcoming'), recent: $('#tv-recent'), groups: $('#tv-groups'), overall: $('#tv-overall'), groupsWrap: $('#tv-groups-wrap') }
-  };
+    tv: { name: $('#tv-tour-name'), info: $('#tv-tour-info'), champion: $('#tv-champion'), upcoming: $('#tv-upcoming'), recent: $('#tv-recent'), groups: $('#tv-groups'), overall: $('#tv-overall'), groupsWrap: $('#tv-groups-wrap') }
 
   // ======= UTIL =======
   function uid(){ return state.seq++; }
@@ -480,7 +490,14 @@ function setGender(g){
    const gName = curGender==='M' ? 'Masculino' : 'Feminino';
     el.tv.name.textContent = t.name ? `${t.name} (${gName})` : '—';
     el.tv.info.textContent = [t.local||'', t.date||''].filter(Boolean).join(' • ') || '—';
-
+    const champId = getChampionId();
+    if(champId){
+      const champName = duoName(byId(champId, state.teams));
+      el.tv.champion.textContent = `🏆 Campeão: ${champName}`;
+      el.tv.champion.classList.remove('hidden');
+    } else {
+      el.tv.champion.classList.add('hidden');
+    }
     const upcoming = state.matches.filter(m=>!m.done).sort((a,b)=> (a.round-b.round) || (a.time||'').localeCompare(b.time||''));
     const recent = state.matches.filter(m=>m.done).sort((a,b)=> (b.id - a.id) );
 
